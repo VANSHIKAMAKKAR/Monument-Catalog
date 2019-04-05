@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+{% block content %}
+<a style="font-size: 30px; text-decoration: underline; letter-spacing: 1px; color: #fff;" href="{{url_for('gdisconnect')}}">Click here to logout</a>
+<div class="row banner main">
+	<center><div id="heading"><br><br>INDIAN HERITAGE CATALOG</div></center><br><br><br><br><br><br>
+	<a href="{{url_for('newPlace')}}"><button id="b1">Add Place</button></a>
+	<div id="p1"><font style="color: #EEFF41;">CATEGORY</font></div>
+	{% for i in p%}
+	<a href="{{url_for('showMonuments', place_id = i.id)}}"><div id="p2">{{i.name}}</div>
+	<br>
+	{% endfor %}
+{% endblock %}
