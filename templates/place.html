@@ -2,7 +2,7 @@
 {% block content %}
 <a style="font-size: 30px; color: #fff; text-decoration: underline; letter-spacing: 1px;" href="{{url_for('showLogin')}}">Click here to login</a>
 <div class="row banner main">
-	<center><div id="heading"><br><br>INDIAN HERITAGE CATALOG</div></center>
+	<center><div id="heading"><br><br>INDIAN MONUMENTS CATALOG</div></center>
 	<div id="p1"><font style="color: #EEFF41;">CATEGORY</font></div>
 	{% for i in p%}
 	<a href="{{url_for('showMonuments', place_id = i.id)}}"><div id="p2">{{i.name}}</div>

@@ -2,11 +2,19 @@
 {% block content %}
 <a style="font-size: 30px; text-decoration: underline; letter-spacing: 1px; color: #fff;" href="{{url_for('gdisconnect')}}">Click here to logout</a>
 <div class="row banner main">
-	<center><div id="heading"><br><br>INDIAN HERITAGE CATALOG</div></center><br><br><br><br><br><br>
+	<center><div id="heading"><br><br>INDIAN MONUMENTS CATALOG</div></center><br><br><br><br>
+	<center>
+	<div class = 'flash'>
+		<font style="font-size: 32px; font-weight: 700; letter-spacing: 1px; color: #fff; margin-top: 80px;  text-shadow: 2px 2px #ff0000;"> You are logged in.</font>
+</center>
+<br><br>
 	<a href="{{url_for('newPlace')}}"><button id="b1">Add Place</button></a>
 	<div id="p1"><font style="color: #EEFF41;">CATEGORY</font></div>
 	{% for i in p%}
-	<a href="{{url_for('showMonuments', place_id = i.id)}}"><div id="p2">{{i.name}}</div>
+	<div id="p2"><a href="{{url_for('showPublicMonuments', place_id = i.id)}}">{{i.name}}</a>
+		<a href="{{url_for('editPlace', place_id = i.id)}}"><button style="margin-top: 2px; float :right; margin-right: 15px; color: #fff; background-color: transparent; font-size: 25px; padding: 4px 4px;">EDIT</button> </a>
+		<a href="{{url_for('deletePlace', place_id = i.id)}}"><button style="margin-top: 2px; float :right; margin-right: 30px; color: #fff; background-color: transparent; font-size: 25px; padding: 4px 4px;">DELETE</button></a>
+	</div>
 	<br>
 	{% endfor %}
 {% endblock %}

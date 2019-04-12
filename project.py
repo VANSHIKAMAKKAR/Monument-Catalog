@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template, request, redirect
+from flask import jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Places, PopularLocations, User
@@ -31,17 +32,26 @@ def showPlaces():
     place = session.query(Places).order_by(asc(Places.name))
     return render_template('place.html', p=place)
 
+
 @app.route('/newplaces/')
 def shownewPlaces():
     place = session.query(Places).order_by(asc(Places.name))
     return render_template('newPlace.html', p=place)
 
 # Show monuments
-@app.route('/places/<int:place_id>/')
+@app.route('/monu/<int:place_id>/')
 def showMonuments(place_id):
-    place = session.query(Places).filter_by(id = place_id).one()
-    monu = session.query(PopularLocations).filter_by(places_id = place_id).all()
-    return render_template('monuments.html', p=place , Monu = monu)
+    place = session.query(Places).filter_by(id=place_id).one()
+    monu = session.query(PopularLocations).filter_by(places_id=place_id).all()
+    return render_template('monuments.html', p=place, Monu=monu)
+
+
+@app.route('/publicmonu/<int:place_id>/')
+def showPublicMonuments(place_id):
+    place = session.query(Places).filter_by(id=place_id).one()
+    monu = session.query(PopularLocations).filter_by(places_id=place_id).all()
+    return render_template('publicmonuments.html', p=place, Monu=monu)
+
 
 @app.route('/places/new/', methods=['GET', 'POST'])
 def newPlace():
@@ -58,19 +68,163 @@ def newPlace():
         return render_template('addplace.html')
 
 
+@app.route('/places/<int:place_id>/delete/',
+           methods=['GET', 'POST'])
+def deletePlace(place_id):
+    placeToDelete = session.query(
+        Places).filter_by(id=place_id).one()
+    Placemon = session.query(PopularLocations).filter_by(
+        places_id=place_id).all()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if placeToDelete.user_id != login_session['user_id']:
+        return "<script>function myFunction() \
+        {alert('You are not authorized to delete this Place. \
+        Please create your own Place in order to delete.');\
+        setTimeout(function() \
+        {window.location.href = '/newplaces/';}, 1000);}\
+        </script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        for i in Placemon:
+            session.delete(i)
+            session.commit()
+        session.delete(placeToDelete)
+        session.commit()
+        return redirect(url_for('shownewPlaces', places_id=place_id))
+    else:
+        return render_template('deleteplace.html', place=placeToDelete)
 
 
+@app.route('/places/<int:place_id>/edit', methods=['GET', 'POST'])
+def editPlace(place_id):
+    editedPlace = session.query(Places).filter_by(id=place_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if editedPlace.user_id != login_session['user_id']:
+        return "<script>function myFunction() \
+        {alert('You are not authorized to edit this Place. \
+        Please create your own Place in order to edit.');\
+        setTimeout(function() \
+        {window.location.href = '/newplaces/';}, 1000);}\
+        </script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editedPlace.name = request.form['name']
+            return redirect(url_for('shownewPlaces'))
+    else:
+        return render_template('editplace.html', place=editedPlace)
 
 
+@app.route('/monu/<int:place_id>/new', methods=['GET', 'POST'])
+def addnewmonu(place_id):
+    monu = session.query(PopularLocations).filter_by(
+        places_id=place_id).all()
+    place = session.query(Places).filter_by(
+        id=place_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if place.user_id != login_session['user_id']:
+        return "<script>function myFunction() \
+        {alert('You are not authorized to add Monument.');\
+        setTimeout(function()\
+        {window.location.href = '/newplaces';}, 1000);}</script>\
+        <body onload='myFunction()'>"
+    if request.method == 'POST':
+        newmonu = PopularLocations(name=request.form['name'],
+                                   description=request.form['description'],
+                                   year=request.form['year'],
+                                   founder=request.form['founder'],
+                                   places_id=place_id)
+        session.add(newmonu)
+        session.commit()
+        return redirect(url_for('showPublicMonuments',
+                                place_id=place_id))
+    else:
+        return render_template('addnewmonu.html',
+                               place_id=place_id, monu=monu,
+                               place=place)
 
 
+@app.route('/monu/<int:place_id><int:places_id>/edit',
+           methods=['GET', 'POST'])
+def editMon(place_id, places_id):
+    editmon = session.query(PopularLocations).filter_by(id=places_id).one()
+    Place = session.query(Places).filter_by(id=place_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if Place.user_id != login_session['user_id']:
+        return "<script>function myFunction() \
+        {alert('You are not authorized to edit this Monument. \
+        Please create your own Monument in order to edit.');\
+        setTimeout(function()\
+        {window.location.href = '/newPlace/';}, 1000);}</script>\
+        <body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editmon.name = request.form['name']
+        if request.form['description']:
+            editmon.description = request.form['description']
+        if request.form['year']:
+            editmon.year = request.form['year']
+        if request.form['founder']:
+            editmon.starring = request.form['founder']
+        session.add(editmon)
+        session.commit()
+        return redirect(url_for('showPublicMonuments',
+                                place_id=place_id))
+    else:
+        return render_template('editmon.html',
+                               place=Place, editmon=editmon)
 
 
+@app.route('/monu/<int:place_id>/<int:places_id>/delete',
+           methods=['GET', 'POST'])
+def deleteMonu(place_id, places_id):
+    Place = session.query(Places).filter_by(id=place_id).one()
+    monuToDelete = session.query(PopularLocations).filter_by(
+        id=places_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if Place.user_id != login_session['user_id']:
+        return "<script>function myFunction() \
+        {alert('You are not authorized to delete this Monument. Please create \
+        your own Monument in order to delete.');\
+        setTimeout(function() \
+        {window.location.href = '/newmovies/';}, 1000);}</script><body \
+        onload='myFunction()'>"
+    if request.method == 'POST':
+        session.delete(monuToDelete)
+        session.commit()
+        return redirect(url_for('showPublicMonuments',
+                                place_id=place_id))
+    else:
+        return render_template('deletemonu.html',
+                               monu=monuToDelete, place=Place)
 
 
+@app.route('/places/<int:place_id>/loc/JSON')
+def placelocJSON(place_id):
+    place = session.query(Movies).filter_by(id=place_id).all()
+    loc = session.query(PopularLocations).filter_by(
+        places_id=place_id).all()
+    return jsonify(loc=[i.serialize for i in loc])
+
+
+@app.route('/places/<int:place_id>/<int:places_id>/JSON')
+def locaJSON(place_id, places_id):
+    loc = session.query(PopularLocations).filter_by(id=places_id).all()
+    return jsonify(Loc=[i.serialize for i in loc])
+
+
+@app.route('/places/JSON')
+def placesJSON():
+    place = session.query(Places).all()
+    return jsonify(Place=[i.serialize for i in place])
 
 
 # Create anti-forgery state token
+
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -78,6 +232,7 @@ def showLogin():
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
+
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -131,7 +286,7 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -165,7 +320,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px;\
+     height: 300px;border-radius: 150px;-webkit-border-radius:\
+      150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -202,24 +359,20 @@ def gdisconnect():
     # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(
-            json.dumps('Current user not connected.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        place = session.query(Places).order_by(asc(Places.name))
+        return render_template('place.html', p=place)
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     if result['status'] == '200':
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        place = session.query(Places).order_by(asc(Places.name))
+        return render_template('place.html', p=place)
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-        response.headers['Content-Type'] = 'application/json'
-        return response    
+        place = session.query(Places).order_by(asc(Places.name))
+        return render_template('place.html', p=place)
+
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
-

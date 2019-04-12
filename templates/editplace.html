@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+{% block content %}
+	<div class="row banner main">
+	<center><div id="heading"><br><br>EDIT PLACE</div></center></div>
+		<center>
+			<form action="#" method = "post">
+				<center>
+					<font style="font-size: 40px; color: #fff;">ARE YOU SURE YOU WANT TO EDIT PLACE : {{place.name}}</font><br><br>
+					<input style="width: 380px; background-color: #fff; color: #000; height: 40px; border-radius: 5px; font-size: 30px;" type ="text" maxlength="100" name="name"></center>
+				<br>
+				<center><button type="submit" style="color: #fff; background-color: #000; width: 180px; height: 42px; border-radius: 4px; font-size: 28px;" class="btn btn-default" id="submit" type="submit">EDIT</button><a href="{{url_for('shownewPlaces',places_id=place.id)}}"><input type="button" style="color: #fff; background-color: #000; width: 180px; height: 42px; border-radius: 4px; font-size: 28px; margin-left: 20px;" value="CANCEL">
+				</center>
+			</form>
+		</center>
+{% endblock %}

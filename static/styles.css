@@ -33,13 +33,13 @@ body
 	width:50%;
     line-height: auto;
     padding: 10px 10px;
-    background-color: #90A4AE;
+    background-color: #EF5350;
     color:#fff;
     font-family: Verdana;
 }
 #p2:hover
 {
-	opacity: 0.8;
+	opacity: 0.9;
 }
 a
 {
@@ -55,7 +55,7 @@ a
 {
 	margin-top: 15px;
 	margin-left: 10%;
-	background-color: #000;
+	background-color: #EF5350;
 	color: #fff;
 	width: 80%;
 	height: auto;
@@ -67,38 +67,24 @@ a
 }
 #b1
 {
-	width: 10%;
+	width: 15%;
 	height: auto;
 	padding:20px 20px;
-	border: 5px;
+	border-radius: 5px;
 	border-color: #000;
-	color: #000;
-	background-color: grey;
+	color: #fff;
+	background-color: #000;
 	font-weight: 900;
-	font-size: 20px;
+	font-size: 25px;
 }
-input[type=text] 
+button
 {
-  margin-top: -100px;
-  width: 40%;
-  height: 60px;
-  border-radius: 3px; 
-  border: none;
-  background-color: #3CBC8D;
-  color: white;
-  font-size: 30px;
- }
-#submit
+	 box-shadow: none;
+	 border-color: #fff;  
+}
+button:hover
 {
-  margin-top: 60px; 
-  background-color: #000;
-  border: none;
-  border-radius: 2px;
-  width: 200px;
-  height: 60px;
-  opacity: 0.9;
-  color: #fff;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 40px; 
+	box-shadow: none;
+	transition: 2s;
+	box-shadow: 5px 5px 9px 9px #000;
 }
