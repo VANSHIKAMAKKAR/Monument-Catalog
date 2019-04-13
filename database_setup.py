@@ -21,7 +21,7 @@ class Places(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user = relationship(User , cascade="save-update")
 
     @property
     def serialize(self):
@@ -41,9 +41,9 @@ class PopularLocations(Base):
     year = Column(Integer)
     founder = Column(String(250))
     places_id = Column(Integer, ForeignKey('places.id'))
-    places = relationship(Places)
+    places = relationship(Places , cascade="save-update")
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user = relationship(User , cascade="save-update")
 
     @property
     def serialize(self):

@@ -12,6 +12,7 @@ How to Run
 
     Install VirtualBox and Vagrant
     Launch Vagrant
+    download vagrant files from here https://github.com/udacity/fullstack-nanodegree-vm
 
 $ Vagrant up 
 

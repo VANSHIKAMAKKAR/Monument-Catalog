@@ -25,7 +25,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-# Show places
+
 @app.route('/')
 @app.route('/places/')
 def showPlaces():
@@ -38,7 +38,7 @@ def shownewPlaces():
     place = session.query(Places).order_by(asc(Places.name))
     return render_template('newPlace.html', p=place)
 
-# Show monuments
+
 @app.route('/monu/<int:place_id>/')
 def showMonuments(place_id):
     place = session.query(Places).filter_by(id=place_id).one()
@@ -204,7 +204,7 @@ def deleteMonu(place_id, places_id):
 
 @app.route('/places/<int:place_id>/loc/JSON')
 def placelocJSON(place_id):
-    place = session.query(Movies).filter_by(id=place_id).all()
+    place = session.query(Places).filter_by(id=place_id).all()
     loc = session.query(PopularLocations).filter_by(
         places_id=place_id).all()
     return jsonify(loc=[i.serialize for i in loc])

@@ -5,13 +5,13 @@
 	</div>
 	<center>
 <form action="#" method = 'post'>
-	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="name" placeholder="Monument Name">
+	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="name" placeholder="Monument Name" oninvalid="alert('You must fill out this field!');" required> 
+	<br><br> 
+	<textarea style="border-radius: 5px; color: #000; font-size: 30px;" type ="text" rows="5" cols="40" name="description" placeholder="Type Description Here ..." oninvalid="alert('You must fill out this field!');" required></textarea>
 	<br><br>
-	<textarea style="border-radius: 5px; color: #000; font-size: 30px;" type ="text" rows="5" cols="40" name="description" placeholder="Type Description Here ..."></textarea>
+	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="year" placeholder="year" oninvalid="alert('You must fill out this field!');" required> 
 	<br><br>
-	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="year" placeholder="year">
-	<br><br>
-	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="founder" placeholder="founder">
+	<input style="width: 730px; height: 40px; border-radius: 5px; color: #000; font-size: 30px;" type ="text" maxlength="100" name="founder" placeholder="founder" oninvalid="alert('You must fill out this field!');" required>
 	<br><br>
 	<button style="width:190px; height: 40px; font-size: 30px; background-color: #000; color: #fff;"type="submit" id="submit" type="submit">ADD</button>
 	&nbsp;&nbsp;&nbsp;<a href = "{{url_for('showPublicMonuments',place_id=place.id)}}">
